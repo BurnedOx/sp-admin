@@ -1,32 +1,32 @@
 import * as actionTypes from 'actions';
 
 const initialState = {
-  loggedIn: false,
-  user: {
-    first_name: 'Shen',
-    last_name: 'Zhi',
-    email: 'demo@devias.io',
-    avatar: '/images/avatars/avatar_11.png',
-    bio: 'Brain Director',
-    role: 'ADMIN' // ['GUEST', 'USER', 'ADMIN']
-  }
+  user: `JSON.parse(localStorage.getItem('user'))`,
+  error: null
 };
 
 const sessionReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SESSION_LOGIN: {
+      localStorage.setItem('user', JSON.stringify(action.user));
       return {
-        ...initialState
+        user: action.user,
+        error: null
       };
     }
 
-    case actionTypes.SESSION_LOGOUT: {
+    case actionTypes.SESSION_ERROR: {
       return {
         ...state,
-        loggedIn: false,
-        user: {
-          role: 'GUEST'
-        }
+        error: action.message
+      }
+    }
+
+    case actionTypes.SESSION_LOGOUT: {
+      localStorage.removeItem('user');
+      return {
+        user: null,
+        error: null
       };
     }
 

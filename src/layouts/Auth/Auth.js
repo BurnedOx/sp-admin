@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/styles';
 import { LinearProgress } from '@material-ui/core';
 
 import { Topbar } from './components';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -17,9 +19,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Auth = props => {
-  const { route } = props;
+  const { route, user } = props;
 
   const classes = useStyles();
+
+  if (user)
+    return <Redirect to="/" />;
 
   return (
     <Fragment>
@@ -37,4 +42,8 @@ Auth.propTypes = {
   route: PropTypes.object
 };
 
-export default Auth;
+const mapStateToProps = state => ({
+  user: state.session.user
+});
+
+export default connect(mapStateToProps)(Auth);

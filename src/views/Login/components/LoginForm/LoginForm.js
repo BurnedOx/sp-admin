@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import validate from 'validate.js';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import { Button, TextField } from '@material-ui/core';
 
@@ -11,9 +11,8 @@ import useRouter from 'utils/useRouter';
 import { login } from 'actions';
 
 const schema = {
-  email: {
-    presence: { allowEmpty: false, message: 'is required' },
-    email: true
+  userId: {
+    presence: { allowEmpty: false, message: 'is required' }
   },
   password: {
     presence: { allowEmpty: false, message: 'is required' }
@@ -38,11 +37,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginForm = props => {
-  const { className, ...rest } = props;
+  const { className, login, ...rest } = props;
 
   const classes = useStyles();
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -82,8 +80,7 @@ const LoginForm = props => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    // dispatch(login());
-    router.history.push('/');
+    login(formState.values.userId, formState.values.password);
   };
 
   const hasError = field =>
@@ -97,13 +94,13 @@ const LoginForm = props => {
     >
       <div className={classes.fields}>
         <TextField
-          error={hasError('email')}
+          error={hasError('userId')}
           fullWidth
-          helperText={hasError('email') ? formState.errors.email[0] : null}
-          label="Email address"
-          name="email"
+          helperText={hasError('userId') ? formState.errors.userId[0] : null}
+          label="User ID"
+          name="userId"
           onChange={handleChange}
-          value={formState.values.email || ''}
+          value={formState.values.userId || ''}
           variant="outlined"
         />
         <TextField
@@ -138,4 +135,8 @@ LoginForm.propTypes = {
   className: PropTypes.string
 };
 
-export default LoginForm;
+const mapDispatchToProps = dispatch => ({
+  login: (userId, password) => dispatch(login(userId, password))
+});
+
+export default connect(undefined, mapDispatchToProps)(LoginForm);

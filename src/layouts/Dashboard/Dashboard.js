@@ -3,6 +3,8 @@ import { renderRoutes } from 'react-router-config';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { LinearProgress } from '@material-ui/core';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 
 import { NavBar, TopBar, ChatBar } from './components';
 
@@ -36,7 +38,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Dashboard = props => {
-  const { route } = props;
+  const { route, user } = props;
 
   const classes = useStyles();
   const [openNavBarMobile, setOpenNavBarMobile] = useState(false);
@@ -48,6 +50,9 @@ const Dashboard = props => {
   const handleNavBarMobileClose = () => {
     setOpenNavBarMobile(false);
   };
+
+  if (!user)
+    return <Redirect to="/auth/login" />
 
   return (
     <div className={classes.root}>
@@ -76,4 +81,8 @@ Dashboard.propTypes = {
   route: PropTypes.object
 };
 
-export default Dashboard;
+const mapStateToProps = state => ({
+  user: state.session.user
+});
+
+export default connect(mapStateToProps)(Dashboard);
