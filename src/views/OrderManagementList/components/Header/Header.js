@@ -36,16 +36,8 @@ const Header = props => {
             component="h1"
             variant="h3"
           >
-            Orders
+            Withdrawals
           </Typography>
-        </Grid>
-        <Grid item>
-          <Button
-            color="primary"
-            variant="contained"
-          >
-            Add order
-          </Button>
         </Grid>
       </Grid>
     </div>

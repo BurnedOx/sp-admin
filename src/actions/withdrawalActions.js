@@ -5,10 +5,15 @@ export const WITHDRAWAL_PAY = 'WITHDRAWAL_PAY';
 export const WITHDRAWAL_CANCEL = 'WITHDRAWAL_CANCEL';
 export const WITHDRAWAL_UNPAY = 'WITHDRAWAL_UNPAY';
 export const WITHDRAWAL_ERROR = 'WITHDRAWAL_ERROR';
+export const WITHDRAWAL_GOT_ERROR = 'WITHDRAWAL_GOT_ERROR';
+
+export const gotWithdrawError = () => ({
+    type: WITHDRAWAL_GOT_ERROR
+});
 
 /**
  * 
- * @param {'paid' | 'unpaid' | undefined} status
+ * @param {'paid' | 'unpaid' | 'cancelled' | undefined} status
  */
 export const getWithdrawals = (status) => dispatch => (
     axios.get('/withdrawal/all', { params: { status } })

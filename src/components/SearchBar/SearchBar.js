@@ -7,6 +7,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { Search, Filter } from './components';
 import EpinFilter from './components/EpinFilter';
+import WithdrawalFilter from './components/WithdrawalFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,6 +49,12 @@ const SearchBar = props => {
   switch (forFilter) {
     case 'epin':
       filterComponent = <EpinFilter
+        onClose={handleFilterClose}
+        onFilter={onFilter}
+        open={openFilter} />;
+      break;
+    case 'withdrawal':
+      filterComponent = <WithdrawalFilter
         onClose={handleFilterClose}
         onFilter={onFilter}
         open={openFilter} />;

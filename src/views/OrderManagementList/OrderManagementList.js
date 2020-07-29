@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
-import axios from 'utils/axios';
-import { Page, SearchBar } from 'components';
+import { Alert, Page, SearchBar } from 'components';
 import { Header, Results } from './components';
+import { useDispatch, useSelector } from 'react-redux';
+import { getWithdrawals, gotWithdrawError } from 'actions';
+import { Snackbar } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,37 +18,51 @@ const useStyles = makeStyles(theme => ({
 
 const OrderManagementList = () => {
   const classes = useStyles();
-  const [orders, setOrders] = useState([]);
+  const withdrawalStore = useSelector(state => state.withdrawal);
+  const dispatch = useDispatch();
+
+  const { withdrawals, filter, error } = withdrawalStore;
 
   useEffect(() => {
-    let mounted = true;
-
-    const fetchOrders = () => {
-      axios.get('/api/orders').then(response => {
-        if (mounted) {
-          setOrders(response.data.orders);
-        }
-      });
-    };
-
-    fetchOrders();
-
-    return () => {
-      mounted = false;
-    };
+    if (filter && filter !== 'all') {
+      dispatch(getWithdrawals(filter));
+    } else {
+      dispatch(getWithdrawals());
+    }
   }, []);
+
+  const handleError = () => dispatch(gotWithdrawError());
+
+  const handleFilter = (values) => {
+    if (values.status !== 'all') {
+      dispatch(getWithdrawals(values.status));
+    } else {
+      dispatch(getWithdrawals());
+    }
+  };
 
   return (
     <Page
       className={classes.root}
-      title="Orders Management List"
+      title="Withdrawals Management List"
     >
       <Header />
-      <SearchBar />
+      <SearchBar
+        forFilter="withdrawal"
+        onFilter={handleFilter} />
       <Results
         className={classes.results}
-        orders={orders} //
+        orders={withdrawals}
+        filter={filter}
       />
+
+      <Snackbar
+        open={error !== null}
+        autoHideDuration={6000}
+        onClose={handleError}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+        <Alert variant="error" message={error} onClose={handleError} />
+      </Snackbar>
     </Page>
   );
 };

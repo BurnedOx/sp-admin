@@ -24,6 +24,8 @@ import {
 } from '@material-ui/core';
 
 import { Label, GenericMoreButton, TableEditBar } from 'components';
+import { useDispatch } from 'react-redux';
+import { cancelWithdrawals, payWithdrawals, unpayWithdrawals } from 'actions';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -43,9 +45,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, orders, ...rest } = props;
+  const { className, orders, filter, ...rest } = props;
 
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [page, setPage] = useState(0);
@@ -88,10 +91,9 @@ const Results = props => {
   };
 
   const paymentStatusColors = {
-    canceled: colors.grey[600],
-    pending: colors.orange[600],
-    completed: colors.green[600],
-    rejected: colors.red[600]
+    unpaid: colors.orange[600],
+    paid: colors.green[600],
+    cancelled: colors.red[600]
   };
 
   return (
@@ -110,7 +112,7 @@ const Results = props => {
       <Card>
         <CardHeader
           action={<GenericMoreButton />}
-          title="Orders"
+          title={`${filter.toUpperCase()} WITHDRAWALS`}
         />
         <Divider />
         <CardContent className={classes.content}>
@@ -139,7 +141,7 @@ const Results = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {orders.slice(0, rowsPerPage).map(order => (
+                  {orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(order => (
                     <TableRow
                       key={order.id}
                       selected={selectedOrders.indexOf(order.id) !== -1}
@@ -153,26 +155,29 @@ const Results = props => {
                         />
                       </TableCell>
                       <TableCell>
-                        {order.payment.ref}
+                        {order.id}
                         <Typography variant="body2">
-                          {moment(order.created_at).format(
+                          {moment(order.createdAt).format(
                             'DD MMM YYYY | hh:mm'
                           )}
                         </Typography>
                       </TableCell>
-
-                      <TableCell>{order.customer.name}</TableCell>
-                      <TableCell>{order.payment.method}</TableCell>
                       <TableCell>
-                        {order.payment.currency}
-                        {order.payment.total}
+                        {order.fromName}
+                        <Typography variant="body2">
+                          {order.fromId}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>{order.paymentType}</TableCell>
+                      <TableCell>
+                        {order.withdrawAmount}
                       </TableCell>
                       <TableCell>
                         <Label
-                          color={paymentStatusColors[order.payment.status]}
+                          color={paymentStatusColors[order.status]}
                           variant="outlined"
                         >
-                          {order.payment.status}
+                          {order.status}
                         </Label>
                       </TableCell>
                       <TableCell align="right">
@@ -205,7 +210,11 @@ const Results = props => {
           />
         </CardActions>
       </Card>
-      <TableEditBar selected={selectedOrders} />
+      <TableEditBar
+        selected={selectedOrders}
+        onMarkPaid={() => dispatch(payWithdrawals(selectedOrders))}
+        onMarkUnpaid={() => dispatch(unpayWithdrawals(selectedOrders))}
+        onDelete={() => dispatch(cancelWithdrawals(selectedOrders))} />
     </div>
   );
 };

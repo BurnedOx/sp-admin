@@ -10,7 +10,7 @@ const initialState = {
  * 
  * @param {any[]} withdrawals 
  * @param {string[]} ids 
- * @param {'paid' | 'unpaid' | 'canceled'} status 
+ * @param {'paid' | 'unpaid' | 'cancelled'} status 
  * @returns {any[]}
  */
 const mapWithdrawalsWithIds = (withdrawals, ids, status) => (
@@ -50,7 +50,7 @@ const withdrawalReducer = (state = initialState, action) => {
     case actionTypes.WITHDRAWAL_CANCEL: {
       return {
         ...state,
-        withdrawals: mapWithdrawalsWithIds(state.withdrawals, action.ids, 'canceled'),
+        withdrawals: mapWithdrawalsWithIds(state.withdrawals, action.ids, 'cancelled'),
         error: null
       }
     }
@@ -67,6 +67,13 @@ const withdrawalReducer = (state = initialState, action) => {
       return {
         ...state,
         error: action.message
+      }
+    }
+
+    case actionTypes.WITHDRAWAL_GOT_ERROR: {
+      return {
+        ...state,
+        error: null
       }
     }
 
