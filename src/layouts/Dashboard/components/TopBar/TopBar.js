@@ -177,7 +177,7 @@ const TopBar = props => {
     >
       <Toolbar>
         <RouterLink to="/">
-          <h1 style={{ color: "#ffffff" }}>SP-Admin</h1>
+          <h1 style={{ color: "#ffffff" }}>Lifeline-Wallet-Admin</h1>
         </RouterLink>
         <div className={classes.flexGrow} />
         <Hidden smDown>
