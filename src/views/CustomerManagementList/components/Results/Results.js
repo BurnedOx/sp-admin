@@ -135,16 +135,16 @@ const Results = props => {
                       />
                     </TableCell>
                     <TableCell>Name</TableCell>
-                    <TableCell>Location</TableCell>
-                    <TableCell>Money spent</TableCell>
-                    <TableCell>Type</TableCell>
-                    <TableCell>Projects held</TableCell>
-                    <TableCell>Reviews</TableCell>
+                    <TableCell>MOBILE</TableCell>
+                    <TableCell>WALLET</TableCell>
+                    <TableCell>STATUS</TableCell>
+                    <TableCell>SPONSOR ID</TableCell>
+                    <TableCell>SPONSOR NAME</TableCell>
                     <TableCell align="right">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {customers.slice(0, rowsPerPage).map(customer => (
+                  {customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(customer => (
                     <TableRow
                       hover
                       key={customer.id}
@@ -179,20 +179,17 @@ const Results = props => {
                             >
                               {customer.name}
                             </Link>
-                            <div>{customer.email}</div>
+                            <div>{customer.id}</div>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{customer.location}</TableCell>
+                      <TableCell>{customer.mobile}</TableCell>
                       <TableCell>
-                        {customer.currency}
-                        {customer.spent}
+                        {customer.wallet}
                       </TableCell>
-                      <TableCell>{customer.type}</TableCell>
-                      <TableCell>{customer.projects}</TableCell>
-                      <TableCell>
-                        <ReviewStars value={customer.rating} />
-                      </TableCell>
+                      <TableCell>{customer.status}</TableCell>
+                      <TableCell>{customer.sponsoredBy ? customer.sponsoredBy.id : "unavailable"}</TableCell>
+                      <TableCell>{customer.sponsoredBy ? customer.sponsoredBy.name : "unavailable"}</TableCell>
                       <TableCell align="right">
                         <Button
                           color="primary"

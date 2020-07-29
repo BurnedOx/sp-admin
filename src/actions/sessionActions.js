@@ -19,7 +19,7 @@ export const logout = () => ({
 });
 
 export const login = (userId, password) => dispatch => {
-  axios.post('/accounts/login', { userId, password })
+  axios.post('/accounts/admin/login', { userId, password })
     .then(res => dispatch(loginSuccess(res.data)))
     .catch(error => dispatch(sessionFail(error.message)));
 }

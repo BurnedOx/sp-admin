@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -27,9 +28,7 @@ const Header = props => {
 
   const classes = useStyles();
 
-  const data = {
-    name: 'Shen Zhi'
-  };
+  const session = useSelector(state => state.session);
 
   return (
     <div
@@ -48,7 +47,7 @@ const Header = props => {
         gutterBottom
         variant="h3"
       >
-        Good Morning, {data.name}
+        Good Morning, {session.user.name}
       </Typography>
       <Typography variant="subtitle1">Here's what's happening</Typography>
     </div>

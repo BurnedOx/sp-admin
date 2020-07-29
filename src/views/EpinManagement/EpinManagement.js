@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
-import axios from 'utils/axios';
 import { Page, SearchBar } from 'components';
 import { Header, Results } from './components';
 import { useDispatch, useSelector } from 'react-redux';
-import { getMembers } from 'actions';
+import { getAllEpins, getUnusedEpins, getUsedEpins } from 'actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,19 +15,28 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CustomerManagementList = () => {
+const EpinManagementList = () => {
   const classes = useStyles();
 
-  const member = useSelector(state => state.member);
+  const epinStore = useSelector(state => state.epin);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getMembers());
+    dispatch(getAllEpins());
   }, []);
 
-  const handleFilter = () => {};
-  const handleSearch = () => {};
+  const handleFilter = (values) => {
+    switch (values.epinStatus) {
+      case 'all':
+        return dispatch(getAllEpins());
+      case 'used':
+        return dispatch(getUsedEpins());
+      case 'unused':
+        return dispatch(getUnusedEpins());
+    }
+  };
+  const handleSearch = () => { };
 
   return (
     <Page
@@ -39,15 +47,17 @@ const CustomerManagementList = () => {
       <SearchBar
         onFilter={handleFilter}
         onSearch={handleSearch}
+        forFilter="epin"
       />
-      {member.members.length !== 0 && (
+      {epinStore.epins.length !== 0 && (
         <Results
           className={classes.results}
-          customers={member.members}
+          epins={epinStore.epins}
+          filter={epinStore.filter}
         />
       )}
     </Page>
   );
 };
 
-export default CustomerManagementList;
+export default EpinManagementList;

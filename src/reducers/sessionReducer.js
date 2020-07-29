@@ -1,7 +1,7 @@
 import * as actionTypes from 'actions';
 
 const initialState = {
-  user: `JSON.parse(localStorage.getItem('user'))`,
+  user: null,
   error: null
 };
 

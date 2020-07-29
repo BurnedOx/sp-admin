@@ -69,9 +69,9 @@ const NavBar = props => {
           className={classes.name}
           variant="h4"
         >
-          {session.user.first_name} {session.user.last_name}
+          {session.user.name}
         </Typography>
-        <Typography variant="body2">{session.user.bio}</Typography>
+        <Typography variant="body2">{session.user.roll}</Typography>
       </div>
       <Divider className={classes.divider} />
       <nav className={classes.navigation}>

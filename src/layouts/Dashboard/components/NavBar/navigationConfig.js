@@ -55,6 +55,10 @@ export default [
             title: 'Members',
             href: '/management/members'
           },
+          {
+            title: 'EPIN',
+            href: '/management/epins'
+          },
           // {
           //   title: 'Member Details',
           //   href: '/management/members/1/summary'

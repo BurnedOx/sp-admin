@@ -6,6 +6,7 @@ import { Grid, Button } from '@material-ui/core';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { Search, Filter } from './components';
+import EpinFilter from './components/EpinFilter';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,9 +29,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SearchBar = props => {
-  const { onFilter, onSearch, className, ...rest } = props;
+  const { onFilter, onSearch, className, forFilter, ...rest } = props;
 
   const classes = useStyles();
+
+  let filterComponent;
 
   const [openFilter, setOpenFilter] = useState(false);
 
@@ -41,6 +44,21 @@ const SearchBar = props => {
   const handleFilterClose = () => {
     setOpenFilter(false);
   };
+
+  switch (forFilter) {
+    case 'epin':
+      filterComponent = <EpinFilter
+        onClose={handleFilterClose}
+        onFilter={onFilter}
+        open={openFilter} />;
+      break;
+    default:
+      filterComponent = <Filter
+        onClose={handleFilterClose}
+        onFilter={onFilter}
+        open={openFilter}
+      />;
+  }
 
   return (
     <Grid
@@ -66,11 +84,7 @@ const SearchBar = props => {
           <FilterListIcon className={classes.filterIcon} /> Show filters
         </Button>
       </Grid>
-      <Filter
-        onClose={handleFilterClose}
-        onFilter={onFilter}
-        open={openFilter}
-      />
+      {filterComponent}
     </Grid>
   );
 };
@@ -78,7 +92,8 @@ const SearchBar = props => {
 SearchBar.propTypes = {
   className: PropTypes.string,
   onFilter: PropTypes.func,
-  onSearch: PropTypes.func
+  onSearch: PropTypes.func,
+  forFilter: PropTypes.string
 };
 
 export default SearchBar;
