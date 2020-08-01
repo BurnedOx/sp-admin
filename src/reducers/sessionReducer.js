@@ -22,6 +22,13 @@ const sessionReducer = (state = initialState, action) => {
       }
     }
 
+    case actionTypes.SESSION_GOT_ERROR: {
+      return {
+        ...state,
+        error: null
+      }
+    }
+
     case actionTypes.SESSION_LOGOUT: {
       localStorage.removeItem('user');
       return {
