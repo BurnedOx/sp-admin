@@ -31,20 +31,20 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Invoices = props => {
+const SingleLeg = props => {
   const { className, match, ...rest } = props;
 
   const classes = useStyles();
   const {id} = match.params;
-  const [invoices, setInvoices] = useState([]);
+  const [members, setMembers] = useState([]);
 
   useEffect(() => {
     let mounted = true;
 
     const fetchInvoices = () => {
-      axios.get(`/transaction/${id}`).then(response => {
+      axios.get(`/members/${id}/single-leg`).then(response => {
         if (mounted) {
-          setInvoices(response.data);
+          setMembers(response.data);
         }
       });
     };
@@ -64,7 +64,7 @@ const Invoices = props => {
       <Card>
         <CardHeader
           action={<GenericMoreButton />}
-          title="Member Transactions"
+          title="Single-leg Members"
         />
         <Divider />
         <CardContent className={classes.content}>
@@ -74,24 +74,18 @@ const Invoices = props => {
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Credit</TableCell>
-                    <TableCell>Debit</TableCell>
-                    <TableCell>Current Balance</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Activated At</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {invoices.map(invoice => (
-                    <TableRow key={invoice.id}>
-                      <TableCell>{invoice.id}</TableCell>
+                  {members.map(member => (
+                    <TableRow key={member.id}>
+                      <TableCell>{member.id}</TableCell>
+                      <TableCell>{member.name}</TableCell>
                       <TableCell>
-                        {moment(invoice.createdAt).format('DD/MM/YYYY | HH:MM')}
+                        {member.activatedAt && moment(member.activatedAt).format('DD/MM/YYYY | HH:MM')}
                       </TableCell>
-                      <TableCell>{invoice.remarks}</TableCell>
-                      <TableCell>{invoice.credit}</TableCell>
-                      <TableCell>{invoice.debit}</TableCell>
-                      <TableCell>{invoice.currentBalance}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -104,8 +98,8 @@ const Invoices = props => {
   );
 };
 
-Invoices.propTypes = {
+SingleLeg.propTypes = {
   className: PropTypes.string
 };
 
-export default withRouter(Invoices);
+export default withRouter(SingleLeg);

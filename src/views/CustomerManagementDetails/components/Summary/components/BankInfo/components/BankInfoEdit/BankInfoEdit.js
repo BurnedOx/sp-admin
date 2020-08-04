@@ -43,14 +43,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CustomerEdit = props => {
-  const { open, onClose, customer, className, save, ...rest } = props;
+const BankInfoEdit = props => {
+  const { open, onClose, customer, className, ...rest } = props;
 
   const classes = useStyles();
-  const { name, mobile, panNumber } = customer;
 
   const [formState, setFormState] = useState({
-    name, mobile, panNumber
+    ...customer
   });
 
   if (!open) {
@@ -67,15 +66,6 @@ const CustomerEdit = props => {
           : event.target.value
     }));
   };
-
-  const onSave = () => {
-    const state = {...formState}
-    if (state.mobile) {
-      state.mobile = parseInt(state.mobile)
-    }
-    save(state);
-    onClose();
-  }
 
   return (
     <Modal
@@ -107,6 +97,20 @@ const CustomerEdit = props => {
               >
                 <TextField
                   fullWidth
+                  label="Email address"
+                  name="email"
+                  onChange={handleFieldChange}
+                  value={formState.email}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
                   label="Full name"
                   name="name"
                   onChange={handleFieldChange}
@@ -122,9 +126,9 @@ const CustomerEdit = props => {
                 <TextField
                   fullWidth
                   label="Phone number"
-                  name="mobile"
+                  name="phone"
                   onChange={handleFieldChange}
-                  value={formState.mobile}
+                  value={formState.phone}
                   variant="outlined"
                 />
               </Grid>
@@ -135,14 +139,56 @@ const CustomerEdit = props => {
               >
                 <TextField
                   fullWidth
-                  label="Pan Number"
-                  name="panNumber"
+                  label="State/Region"
+                  name="state"
                   onChange={handleFieldChange}
-                  value={formState.panNumber}
+                  value={formState.state}
                   variant="outlined"
                 />
               </Grid>
-              {/* <Grid item />
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Country"
+                  name="country"
+                  onChange={handleFieldChange}
+                  value={formState.country}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Address 1"
+                  name="address1"
+                  onChange={handleFieldChange}
+                  value={formState.address1}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Address 2"
+                  name="address2"
+                  onChange={handleFieldChange}
+                  value={formState.address2}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item />
               <Grid
                 item
                 md={6}
@@ -179,7 +225,7 @@ const CustomerEdit = props => {
                   onChange={handleFieldChange}
                   value={formState.discountedPrices}
                 />
-              </Grid> */}
+              </Grid>
             </Grid>
           </CardContent>
           <CardActions className={classes.actions}>
@@ -191,7 +237,7 @@ const CustomerEdit = props => {
             </Button>
             <Button
               className={classes.saveButton}
-              onClick={onSave}
+              onClick={onClose}
               variant="contained"
             >
               Save
@@ -203,19 +249,18 @@ const CustomerEdit = props => {
   );
 };
 
-CustomerEdit.displayName = 'CustomerEdit';
+BankInfoEdit.displayName = 'CustomerEdit';
 
-CustomerEdit.propTypes = {
+BankInfoEdit.propTypes = {
   className: PropTypes.string,
   customer: PropTypes.any,
   onClose: PropTypes.func,
-  open: PropTypes.bool,
-  save: PropTypes.func
+  open: PropTypes.bool
 };
 
-CustomerEdit.defaultProps = {
+BankInfoEdit.defaultProps = {
   open: false,
-  onClose: () => { }
+  onClose: () => {}
 };
 
-export default CustomerEdit;
+export default BankInfoEdit;

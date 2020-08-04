@@ -16,10 +16,11 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  colors
 } from '@material-ui/core';
 
 import axios from 'utils/axios';
-import { GenericMoreButton } from 'components';
+import { GenericMoreButton, Label } from 'components';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -31,20 +32,20 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Invoices = props => {
+const DirectMembers = props => {
   const { className, match, ...rest } = props;
 
   const classes = useStyles();
-  const {id} = match.params;
-  const [invoices, setInvoices] = useState([]);
+  const { id } = match.params;
+  const [members, setMembers] = useState([]);
 
   useEffect(() => {
     let mounted = true;
 
     const fetchInvoices = () => {
-      axios.get(`/transaction/${id}`).then(response => {
+      axios.get(`/members/${id}/direct`).then(response => {
         if (mounted) {
-          setInvoices(response.data);
+          setMembers(response.data);
         }
       });
     };
@@ -64,7 +65,7 @@ const Invoices = props => {
       <Card>
         <CardHeader
           action={<GenericMoreButton />}
-          title="Member Transactions"
+          title="Direct Members"
         />
         <Divider />
         <CardContent className={classes.content}>
@@ -74,24 +75,30 @@ const Invoices = props => {
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Credit</TableCell>
-                    <TableCell>Debit</TableCell>
-                    <TableCell>Current Balance</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Level</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Activated At</TableCell>
+                    <TableCell>DOJ</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {invoices.map(invoice => (
-                    <TableRow key={invoice.id}>
-                      <TableCell>{invoice.id}</TableCell>
+                  {members.map(member => (
+                    <TableRow key={member.id}>
+                      <TableCell>{member.id}</TableCell>
+                      <TableCell>{member.name}</TableCell>
+                      <TableCell>{member.level}</TableCell>
                       <TableCell>
-                        {moment(invoice.createdAt).format('DD/MM/YYYY | HH:MM')}
+                        <Label color={member.status === 'active' ? colors.green[600] : colors.orange[600]}>
+                          {member.status}
+                        </Label>
                       </TableCell>
-                      <TableCell>{invoice.remarks}</TableCell>
-                      <TableCell>{invoice.credit}</TableCell>
-                      <TableCell>{invoice.debit}</TableCell>
-                      <TableCell>{invoice.currentBalance}</TableCell>
+                      <TableCell>
+                        {member.activatedAt && moment(member.activatedAt).format('DD/MM/YYYY | HH:MM')}
+                      </TableCell>
+                      <TableCell>
+                        {moment(member.createdAt).format('DD/MM/YYYY | HH:MM')}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -104,8 +111,8 @@ const Invoices = props => {
   );
 };
 
-Invoices.propTypes = {
+DirectMembers.propTypes = {
   className: PropTypes.string
 };
 
-export default withRouter(Invoices);
+export default withRouter(DirectMembers);

@@ -6,6 +6,8 @@ import { Tabs, Tab, Divider, colors } from '@material-ui/core';
 
 import { Page } from 'components';
 import { Header, Summary, Invoices, Logs } from './components';
+import DirectMembers from './components/DirectMembers';
+import SingleLeg from './components/SingleLeg';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,8 +35,10 @@ const CustomerManagementDetails = props => {
 
   const tabs = [
     { value: 'summary', label: 'Summary' },
-    { value: 'invoices', label: 'Invoices' },
-    { value: 'logs', label: 'Logs' }
+    { value: 'transaction', label: 'Transaction' },
+    // { value: 'logs', label: 'Logs' },
+    { value: 'direct', label: 'Direct Members' },
+    { value: 'single-leg', label: 'Single-leg Members' }
   ];
 
   if (!tab) {
@@ -69,8 +73,10 @@ const CustomerManagementDetails = props => {
       <Divider className={classes.divider} />
       <div className={classes.content}>
         {tab === 'summary' && <Summary />}
-        {tab === 'invoices' && <Invoices />}
+        {tab === 'transaction' && <Invoices />}
+        {tab === 'direct' && <DirectMembers />}
         {tab === 'logs' && <Logs />}
+        {tab === 'single-leg' && <SingleLeg />}
       </div>
     </Page>
   );

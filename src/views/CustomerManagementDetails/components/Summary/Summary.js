@@ -6,26 +6,46 @@ import { Grid } from '@material-ui/core';
 
 import axios from 'utils/axios';
 import { CustomerInfo, Invoices, SendEmails, OtherActions } from './components';
+import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router';
+import BankInfo from './components/BankInfo';
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
 const Summary = props => {
-  const { className, ...rest } = props;
+  const { className, match, ...rest } = props;
 
+  const { id } = match.params;
   const classes = useStyles();
   const [customer, setCustomer] = useState();
+  const [user, setUser] = useState();
+  const { members } = useSelector(state => state.member);
+
+  console.log(user)
 
   useEffect(() => {
     let mounted = true;
 
     const fetchCustomer = () => {
-      axios.get('/api/management/customers/1/summary').then(response => {
+      axios.get(`accounts/details/${id}`).then(response => {
         if (mounted) {
-          setCustomer(response.data.summary);
+          setCustomer(response.data);
         }
       });
+
+      const user = members && members.find(u => u.id === id);
+      if (mounted) {
+        if (!user) {
+          axios.get(`accounts/users/${id}`).then(res => {
+            setUser(res.data)
+          }
+          )
+        } else {
+          setUser(user);
+        }
+      }
     };
 
     fetchCustomer();
@@ -35,8 +55,9 @@ const Summary = props => {
     };
   }, []);
 
-  if (!customer) {
-    return null;
+  const updateMember = (state) => {
+    setUser(s => ({ ...s, ...state }));
+    axios.put(`/accounts/profile/${id}`, state)
   }
 
   return (
@@ -46,16 +67,25 @@ const Summary = props => {
       container
       spacing={3}
     >
-      <Grid
+      {user && <Grid
         item
         lg={4}
         md={6}
         xl={3}
         xs={12}
       >
-        <CustomerInfo customer={customer} />
-      </Grid>
-      <Grid
+        <CustomerInfo customer={user} onUpdate={updateMember} />
+      </Grid>}
+      {user && <Grid
+        item
+        lg={4}
+        md={6}
+        xl={3}
+        xs={12}
+      >
+        <BankInfo bankInfo={user.bankDetails} />
+      </Grid>}
+      {customer && <Grid
         item
         lg={4}
         md={6}
@@ -63,8 +93,8 @@ const Summary = props => {
         xs={12}
       >
         <Invoices customer={customer} />
-      </Grid>
-      <Grid
+      </Grid>}
+      {/* <Grid
         item
         lg={4}
         md={6}
@@ -72,7 +102,7 @@ const Summary = props => {
         xs={12}
       >
         <SendEmails customer={customer} />
-      </Grid>
+      </Grid> */}
       <Grid
         item
         lg={4}
@@ -90,4 +120,4 @@ Summary.propTypes = {
   className: PropTypes.string
 };
 
-export default Summary;
+export default withRouter(Summary);

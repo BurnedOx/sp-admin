@@ -195,7 +195,7 @@ const Results = props => {
                           color="primary"
                           component={RouterLink}
                           size="small"
-                          to="/management/members/1"
+                          to={`/management/members/${customer.id}`}
                           variant="outlined"
                         >
                           View

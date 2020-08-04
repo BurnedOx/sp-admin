@@ -3,18 +3,22 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router';
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
 const Header = props => {
-  const { className, ...rest } = props;
+  const { className, match, ...rest } = props;
 
   const classes = useStyles();
+  const { members } = useSelector(state => state.member);
+  const user = members && members.find(u => u.id === match.params.id)
 
   const customer = {
-    name: 'Ekaterina Tankova'
+    name: user && user.name
   };
 
   return (
@@ -43,4 +47,4 @@ Header.propTypes = {
   className: PropTypes.string
 };
 
-export default Header;
+export default withRouter(Header);

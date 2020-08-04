@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
@@ -21,6 +22,8 @@ import PersonIcon from '@material-ui/icons/PersonOutline';
 
 import { Label } from 'components';
 import { CustomerEdit } from './components';
+import ResetPassword from './components/ResetPassword';
+import SponsorUpdate from './components/SponsorUpdate';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -40,11 +43,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CustomerInfo = props => {
-  const { customer, className, ...rest } = props;
+  const { customer, className, onUpdate, ...rest } = props;
 
   const classes = useStyles();
 
   const [openEdit, setOpenEdit] = useState(false);
+  const [openPass, setOpenPass] = useState(false);
+  const [openSp, setOpenSp] = useState(false);
 
   const handleEditOpen = () => {
     setOpenEdit(true);
@@ -52,6 +57,22 @@ const CustomerInfo = props => {
 
   const handleEditClose = () => {
     setOpenEdit(false);
+  };
+
+  const handlePassOpen = () => {
+    setOpenPass(true);
+  };
+
+  const handlePassClose = () => {
+    setOpenPass(false);
+  };
+
+  const handleSpOpen = () => {
+    setOpenSp(true);
+  };
+
+  const handleSpClose = () => {
+    setOpenSp(false);
   };
 
   return (
@@ -64,42 +85,68 @@ const CustomerInfo = props => {
       <CardContent className={classes.content}>
         <Table>
           <TableBody>
+            <TableRow selected>
+              <TableCell>Id</TableCell>
+              <TableCell>{customer.id}</TableCell>
+            </TableRow>
             <TableRow>
-              <TableCell>Email</TableCell>
+              <TableCell>E-PIN & status</TableCell>
               <TableCell>
-                {customer.email}
+                {customer.epinId}
                 <div>
                   <Label
                     color={
-                      customer.verified ? colors.green[600] : colors.orange[600]
+                      customer.status === 'active' ? colors.green[600] : colors.orange[600]
                     }
                   >
-                    {customer.verified
-                      ? 'Email verified'
-                      : 'Email not verified'}
+                    {customer.status === 'active'
+                      ? 'Account activated'
+                      : 'Account not activated'}
                   </Label>
                 </div>
               </TableCell>
             </TableRow>
             <TableRow selected>
               <TableCell>Phone</TableCell>
-              <TableCell>{customer.phone}</TableCell>
+              <TableCell>{customer.mobile}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>State/Region</TableCell>
-              <TableCell>{customer.state}</TableCell>
+              <TableCell>Sponsored By</TableCell>
+              <TableCell>
+                {customer.sponsoredBy ? customer.sponsoredBy.name : null}
+                <div>
+                  <Label color={colors.green[600]}>
+                    {customer.sponsoredBy ? customer.sponsoredBy.id : null}
+                  </Label>
+                </div>
+              </TableCell>
             </TableRow>
             <TableRow selected>
-              <TableCell>Country</TableCell>
-              <TableCell>{customer.country}</TableCell>
+              <TableCell>PAN Number</TableCell>
+              <TableCell>{customer.panNumber}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Address 1</TableCell>
-              <TableCell>{customer.address1}</TableCell>
+              <TableCell>Role</TableCell>
+              <TableCell>{customer.roll}</TableCell>
+            </TableRow>
+            {customer.activatedAt ?
+              <TableRow selected>
+                <TableCell>Activated At</TableCell>
+                <TableCell>
+                  {moment(customer.activatedAt).format('DD MMM YYYY | hh:mm')}
+                </TableCell>
+              </TableRow> : null}
+            <TableRow>
+              <TableCell>Updated At</TableCell>
+              <TableCell>
+                {moment(customer.updatedAt).format('DD MMM YYYY | hh:mm')}
+              </TableCell>
             </TableRow>
             <TableRow selected>
-              <TableCell>Address 2</TableCell>
-              <TableCell>{customer.address2}</TableCell>
+              <TableCell>Created At</TableCell>
+              <TableCell>
+                {moment(customer.createdAt).format('DD MMM YYYY | hh:mm')}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -109,19 +156,30 @@ const CustomerInfo = props => {
           <EditIcon className={classes.buttonIcon} />
           Edit
         </Button>
-        <Button>
+        <Button onClick={handlePassOpen}>
           <LockOpenIcon className={classes.buttonIcon} />
           Reset &amp; Send Password
         </Button>
-        <Button>
+        <Button onClick={handleSpOpen}>
           <PersonIcon className={classes.buttonIcon} />
-          Login as Customer
+          Update Sponsor
         </Button>
       </CardActions>
       <CustomerEdit
         customer={customer}
         onClose={handleEditClose}
         open={openEdit}
+        save={onUpdate}
+      />
+      <ResetPassword
+        id={customer.id}
+        open={openPass}
+        onClose={handlePassClose}
+      />
+      <SponsorUpdate
+        id={customer.id}
+        open={openSp}
+        onClose={handleSpClose}
       />
     </Card>
   );
@@ -129,7 +187,8 @@ const CustomerInfo = props => {
 
 CustomerInfo.propTypes = {
   className: PropTypes.string,
-  customer: PropTypes.object.isRequired
+  customer: PropTypes.object.isRequired,
+  onUpdate: PropTypes.func
 };
 
 export default CustomerInfo;

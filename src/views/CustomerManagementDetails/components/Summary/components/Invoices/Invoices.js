@@ -38,15 +38,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const getSum = (invoices, type) => {
-  const filtered = invoices.filter(invoice => invoice.type === type);
-  const total = filtered
-    .reduce((total, invoice) => total + invoice.value, 0)
-    .toFixed(2);
-
-  return [filtered, total];
-};
-
 const Invoices = props => {
   const { customer, className, ...rest } = props;
 
@@ -54,79 +45,56 @@ const Invoices = props => {
 
   const handleEditOpen = () => {};
 
-  const [paidInvoices, paidTotal] = getSum(customer.invoices, 'paid');
-  const [draftInvoices, draftTotal] = getSum(customer.invoices, 'draft');
-  const [dueInvoices, dueTotal] = getSum(customer.invoices, 'due');
-  const [refundedInvoices, refundedTotal] = getSum(
-    customer.invoices,
-    'refunded'
-  );
-  const [incomeInvoices, incomeTotal] = getSum(customer.invoices, 'income');
-
   return (
     <Card
       {...rest}
       className={clsx(classes.root, className)}
     >
-      <CardHeader title="Invoices/Billing" />
+      <CardHeader title="Other Details" />
       <Divider />
       <CardContent className={classes.content}>
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell>Auto CC Pay</TableCell>
-              <TableCell>
-                {customer.iban}
-                <div>
-                  <Label
-                    color={
-                      customer.autoCC ? colors.green[600] : colors.red[600]
-                    }
-                  >
-                    {customer.autoCC ? 'YES' : 'NO'}
-                  </Label>
-                </div>
-              </TableCell>
-            </TableRow>
-            <TableRow selected>
-              <TableCell>Paid</TableCell>
-              <TableCell>
-                {paidInvoices.length} ({customer.currency}
-                {paidTotal})
-              </TableCell>
+              <TableCell>Wallet</TableCell>
+              <TableCell>{customer.wallet}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Draft</TableCell>
-              <TableCell>
-                {draftInvoices.length} ({customer.currency}
-                {draftTotal})
-              </TableCell>
-            </TableRow>
-            <TableRow selected>
-              <TableCell>Unpaid/Due</TableCell>
-              <TableCell>
-                {dueInvoices.length} ({customer.currency}
-                {dueTotal})
-              </TableCell>
+              <TableCell>Rank</TableCell>
+              <TableCell>{customer.rank}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Refunded</TableCell>
-              <TableCell>
-                {refundedInvoices.length} ({customer.currency}
-                {refundedTotal})
-              </TableCell>
+              <TableCell>Direct Members</TableCell>
+              <TableCell>{customer.direct}</TableCell>
             </TableRow>
-            <TableRow selected>
-              <TableCell>Gross Income</TableCell>
-              <TableCell>
-                {incomeInvoices.length} ({customer.currency}
-                {incomeTotal})
-              </TableCell>
+            <TableRow>
+              <TableCell>Downline Members</TableCell>
+              <TableCell>{customer.downline}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Single-leg Members</TableCell>
+              <TableCell>{customer.singleLeg}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Level Income</TableCell>
+              <TableCell>{customer.levelIncome}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Single-leg Income</TableCell>
+              <TableCell>{customer.singleLegIncome}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Total Withdrawal</TableCell>
+              <TableCell>{customer.totalWithdrawal}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Total Income</TableCell>
+              <TableCell>{customer.totalIncome}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </CardContent>
-      <CardActions className={classes.actions}>
+      {/* <CardActions className={classes.actions}>
         <Button onClick={handleEditOpen}>
           <EditIcon className={classes.buttonIcon} />
           Edit
@@ -139,7 +107,7 @@ const Invoices = props => {
           <ReceiptIcon className={classes.buttonIcon} />
           Generate Due Invoices
         </Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };
